@@ -33,7 +33,7 @@ import (
 	"strings"
 )
 
-const versionInfo = "gohash 0.1"
+const versionInfo = "gohash 1.0"
 
 // Returns the 32 bit hash of the file using the provided algorithm
 func getHash32(filename string, hs hash.Hash32) (uint32, error) {
