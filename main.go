@@ -35,9 +35,20 @@ import (
 	"hash/fnv"
 	"io/ioutil"
 	"strings"
+
+	"github.com/lnsp/pkginfo"
 )
 
-const versionInfo = "gohash 1.0"
+var (
+	PkgInfo = pkginfo.PackageInfo{
+		Name: "gohash",
+		Version: pkginfo.PackageVersion{
+			Major: 1,
+			Minor: 1,
+			Patch: 0,
+		},
+	}
+)
 
 // Returns the 32 bit hash of the file using the provided algorithm
 func getHash32(filename string, hs hash.Hash32) (uint32, error) {
@@ -146,7 +157,7 @@ func main() {
 
 	// Show version information if requested
 	if *version {
-		fmt.Println(versionInfo)
+		fmt.Println(PkgInfo)
 		return
 	}
 
