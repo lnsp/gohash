@@ -12,7 +12,7 @@ Usage:
 The flags are:
 
 		-a algorithm
-			Available algorithms are crc32, crc64, adler32, fnv32, fnva32, fnv64, fnva64
+			Available algorithms are crc32, crc64, adler32, fnv32, fnva32, fnv64, fnva64, sha1, sha256, sha512
 		--version
 			Shows the current verion of Gohash
 		--help
@@ -21,6 +21,10 @@ The flags are:
 package main
 
 import (
+	"crypto/sha1"
+	"crypto/sha256"
+	"crypto/sha512"
+	"encoding/hex"
 	"errors"
 	"flag"
 	"fmt"
@@ -57,8 +61,34 @@ func getHash64(filename string, hs hash.Hash64) (uint64, error) {
 	return hs.Sum64(), nil
 }
 
+func getHashArray(filename string, hs hash.Hash) ([]byte, error) {
+	bs, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		return nil, err
+	}
+	hs.Write(bs)
+	return hs.Sum(nil), nil
+}
+
 // Maps the name to an algorithm and hashes the file
 func hashFile(filename string, algorithm string) (string, error) {
+	if strings.HasPrefix(algorithm, "sha") {
+		var result []byte
+		var err error
+		switch algorithm {
+		case "sha1":
+			result, err = getHashArray(filename, sha1.New())
+		case "sha256":
+			result, err = getHashArray(filename, sha256.New())
+		case "sha512":
+			result, err = getHashArray(filename, sha512.New())
+		}
+		if err != nil {
+			return "", err
+		}
+		return hex.EncodeToString(result), nil
+	}
 	if strings.HasSuffix(algorithm, "32") {
 		var result uint32
 		var err error
